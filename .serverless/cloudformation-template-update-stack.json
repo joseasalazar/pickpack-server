@@ -19,7 +19,7 @@
     "GraphqlLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/apollo-lambda-dev-graphql"
+        "LogGroupName": "/aws/lambda/pickpack-api-graphql-dev-graphql"
       }
     },
     "IamRoleLambdaExecution": {
@@ -48,7 +48,7 @@
                 "-",
                 [
                   "dev",
-                  "apollo-lambda",
+                  "pickpack-api-graphql",
                   "lambda"
                 ]
               ]
@@ -63,7 +63,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/apollo-lambda-dev*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/pickpack-api-graphql-dev*:*"
                     }
                   ]
                 },
@@ -74,9 +74,21 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/apollo-lambda-dev*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/pickpack-api-graphql-dev*:*:*"
                     }
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:DeleteItem"
+                  ],
+                  "Resource": "arn:aws:dynamodb:us-east-1:*:table/*"
                 }
               ]
             }
@@ -87,7 +99,7 @@
           "Fn::Join": [
             "-",
             [
-              "apollo-lambda",
+              "pickpack-api-graphql",
               "dev",
               {
                 "Ref": "AWS::Region"
@@ -105,10 +117,10 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/apollo-lambda/dev/1569535584324-2019-09-26T22:06:24.324Z/apollo-lambda.zip"
+          "S3Key": "serverless/pickpack-api-graphql/dev/1569557657225-2019-09-27T04:14:17.225Z/pickpack-api-graphql.zip"
         },
-        "FunctionName": "apollo-lambda-dev-graphql",
-        "Handler": "graphql.graphqlHandler",
+        "FunctionName": "pickpack-api-graphql-dev-graphql",
+        "Handler": "handler.graphql",
         "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
@@ -117,27 +129,38 @@
           ]
         },
         "Runtime": "nodejs8.10",
-        "Timeout": 6
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "TOUR_TABLE": "tours-table-dev",
+            "TOUR_PHOTO_TABLE": "tour-photo-table-dev",
+            "TOUR_PROVIDER_TABLE": "tour-providers-table-dev",
+            "ORDER_TABLE": "orders-table-dev",
+            "ORDER_ITEM_TABLE": "order-items-table-dev",
+            "USER_TABLE": "users-table-dev",
+            "USER_PAYMENT_TABLE": "user-payments-table-dev"
+          }
+        }
       },
       "DependsOn": [
         "GraphqlLogGroup",
         "IamRoleLambdaExecution"
       ]
     },
-    "GraphqlLambdaVersionbRKyVepXVpaxPRDTHCLKqotPVzXU1aJgTuqVdj6vYdc": {
+    "GraphqlLambdaVersion0cwA53BrvNpXR1loewxfwf2V6T6Fk46x5nahI86quv8": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GraphqlLambdaFunction"
         },
-        "CodeSha256": "ntnGxJuA/rD+aKV/Wd2puT2iHKJ5PriTDanzIEfo/iA="
+        "CodeSha256": "VdqoR3/efGQ7rqNDqUrzjjMN/7fByJqJdy6CKyK+9Hc="
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "dev-apollo-lambda",
+        "Name": "dev-pickpack-api-graphql",
         "EndpointConfiguration": {
           "Types": [
             "EDGE"
@@ -293,7 +316,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1569535573182": {
+    "ApiGatewayDeployment1569557644316": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -343,6 +366,160 @@
           ]
         }
       }
+    },
+    "TourTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "tours-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tourId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tourId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
+    },
+    "TourPhotoTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "tour-photo-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tourPhotoId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tourPhotoId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
+    },
+    "TourProviderTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "tour-providers-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tourProviderId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tourProviderId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
+    },
+    "OrderTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "orders-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "orderId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "orderId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
+    },
+    "OrderItemTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "order-items-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "orderItemId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "orderItemId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
+    },
+    "UserTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "users-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "ID",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "ID",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
+    },
+    "UserPaymentTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "user-payments-table-dev",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userPaymentId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userPaymentId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      }
     }
   },
   "Outputs": {
@@ -354,7 +531,7 @@
     "GraphqlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GraphqlLambdaVersionbRKyVepXVpaxPRDTHCLKqotPVzXU1aJgTuqVdj6vYdc"
+        "Ref": "GraphqlLambdaVersion0cwA53BrvNpXR1loewxfwf2V6T6Fk46x5nahI86quv8"
       }
     },
     "ServiceEndpoint": {
