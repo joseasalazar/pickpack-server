@@ -37,22 +37,24 @@ const typeDefs = gql`
   }
 
   type OrderItem {
-    itemId: ID
+    orderItemId: ID
     tourId: Tour!
     itemQuantity: Int!
     itemPrice: Int!
   }
 
-  type Customer {
-    customerId: ID
+  type User {
+    userId: ID
+    type: Int
     firstName: String
     lastName: String
     email: String
+    password: String
   }
 
-  type CustomerPayment {
-    customerPaymentId: ID
-    customerId: Customer!
+  type UserPayment {
+    userPaymentId: ID
+    userId: User!
     paymentDate: Date!
     oderId: Order!
   }
@@ -60,7 +62,7 @@ const typeDefs = gql`
   type Query {
     tours: [Tour]
     tourProviders: [TourProvider]
-    customers: [Customer]
+    users: [User]
     orders: [Order]
   }
 `;

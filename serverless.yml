@@ -1,0 +1,144 @@
+# serverless.yml
+
+service: pickpack-api-graphql
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  environment:
+    TOUR_TABLE: tours-table-${self:provider.stage}
+    TOUR_PHOTO_TABLE: tour-photos-table-${self:provider.stage}
+    TOUR_PROVIDER_TABLE: tour-providers-table-${self:provider.stage}
+    ORDER_TABLE: orders-table-${self:provider.stage}
+    ORDER_ITEM_TABLE: order-items-table-${self:provider.stage}
+    USER_TABLE: users-table-${self:provider.stage}
+    USER_PAYMENT_TABLE: user-payments-table-${self:provider.stage}
+  # 'iamRoleStatements' defines the permission policy for the Lambda function.
+  # In this case Lambda functions are granted with permissions to access DynamoDB.
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
+
+# Create our resources with separate CloudFormation templates
+resources:
+  # # API Gateway Errors
+  Resources:
+    # Resources:
+    TourTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TourTable}
+        AttributeDefinitions:
+          - AttributeName: tourId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tourId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    TourPhotoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TourPhotoTable}
+        AttributeDefinitions:
+          - AttributeName: tourPhotoId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tourPhotoId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    TourProviderTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TourProviderTable}
+        AttributeDefinitions:
+          - AttributeName: tourProviderId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tourProviderId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    OrderTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.OrderTable}
+        AttributeDefinitions:
+          - AttributeName: orderId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    OrderItemTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.OrderItemTable}
+        AttributeDefinitions:
+          - AttributeName: orderItemId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderItemId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.UserTable}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    UserPaymentTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.UserPaymentTable}
+        AttributeDefinitions:
+          - AttributeName: userPaymentId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userPaymentId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+functions:
+  graphql:
+    handler: index.graphqlHandler
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+      - http:
+          path: graphql
+          method: get
+          cors: true
