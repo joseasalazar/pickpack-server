@@ -59,17 +59,36 @@ const typeDefs = gql`
   #   oderId: Order!
   # }
 
-  type User {
-    ID: String
-    email: String
-    country: String
-  }
   type Query {
-    user(ID: String!): User
+    info: String!
+    feed: [Link!]!
+    users: [User!]!
   }
   type Mutation {
-    createUser(email: String): Boolean
-    updateUser(ID: String, country: String): User
+    post(url: String!, description: String!): Link!
+    signup(email: String!, password: String!, name: String!): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+    createUser(name: String!, email: String!, password: String!): User
+  }
+
+  type Link {
+    id: ID!
+    description: String!
+    url: String!
+    postedBy: User
+  }
+
+  type AuthPayload {
+    token: String
+    user: User
+  }
+
+  type User {
+    userId: ID!
+    name: String!
+    email: String!
+    password: String!
+    links: [Link]
   }
 `;
 

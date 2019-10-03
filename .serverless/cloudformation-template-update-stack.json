@@ -117,7 +117,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/pickpack-api-graphql/dev/1569557657225-2019-09-27T04:14:17.225Z/pickpack-api-graphql.zip"
+          "S3Key": "serverless/pickpack-api-graphql/dev/1570117608915-2019-10-03T15:46:48.915Z/pickpack-api-graphql.zip"
         },
         "FunctionName": "pickpack-api-graphql-dev-graphql",
         "Handler": "handler.graphql",
@@ -133,11 +133,11 @@
         "Environment": {
           "Variables": {
             "TOUR_TABLE": "tours-table-dev",
-            "TOUR_PHOTO_TABLE": "tour-photo-table-dev",
+            "TOUR_PHOTO_TABLE": "tour-photos-table-dev",
             "TOUR_PROVIDER_TABLE": "tour-providers-table-dev",
             "ORDER_TABLE": "orders-table-dev",
             "ORDER_ITEM_TABLE": "order-items-table-dev",
-            "USER_TABLE": "users-table-dev",
+            "USER_TABLE": "useer-table-dev",
             "USER_PAYMENT_TABLE": "user-payments-table-dev"
           }
         }
@@ -147,14 +147,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "GraphqlLambdaVersion0cwA53BrvNpXR1loewxfwf2V6T6Fk46x5nahI86quv8": {
+    "GraphqlLambdaVersionu7ZCSWxyuqxXWddRsQiPP6Tjdnkrsk7Nh3R4NigJag": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GraphqlLambdaFunction"
         },
-        "CodeSha256": "VdqoR3/efGQ7rqNDqUrzjjMN/7fByJqJdy6CKyK+9Hc="
+        "CodeSha256": "H86c7AzLl7DogbhfNikB1/TjZz1CeeowdFkkI0OaXWo="
       }
     },
     "ApiGatewayRestApi": {
@@ -316,7 +316,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1569557644316": {
+    "ApiGatewayDeployment1570117596650": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -392,7 +392,7 @@
     "TourPhotoTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
-        "TableName": "tour-photo-table-dev",
+        "TableName": "tour-photos-table-dev",
         "AttributeDefinitions": [
           {
             "AttributeName": "tourPhotoId",
@@ -480,16 +480,16 @@
     "UserTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
-        "TableName": "users-table-dev",
+        "TableName": "useer-table-dev",
         "AttributeDefinitions": [
           {
-            "AttributeName": "ID",
+            "AttributeName": "userId",
             "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "ID",
+            "AttributeName": "userId",
             "KeyType": "HASH"
           }
         ],
@@ -531,7 +531,7 @@
     "GraphqlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GraphqlLambdaVersion0cwA53BrvNpXR1loewxfwf2V6T6Fk46x5nahI86quv8"
+        "Ref": "GraphqlLambdaVersionu7ZCSWxyuqxXWddRsQiPP6Tjdnkrsk7Nh3R4NigJag"
       }
     },
     "ServiceEndpoint": {

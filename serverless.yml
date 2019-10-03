@@ -1,4 +1,4 @@
-# # serverless.yml
+# serverless.yml
 
 service: pickpack-api-graphql
 
@@ -8,11 +8,11 @@ provider:
   stage: dev
   environment:
     TOUR_TABLE: tours-table-${self:provider.stage}
-    TOUR_PHOTO_TABLE: tour-photo-table-${self:provider.stage}
+    TOUR_PHOTO_TABLE: tour-photos-table-${self:provider.stage}
     TOUR_PROVIDER_TABLE: tour-providers-table-${self:provider.stage}
     ORDER_TABLE: orders-table-${self:provider.stage}
     ORDER_ITEM_TABLE: order-items-table-${self:provider.stage}
-    USER_TABLE: users-table-${self:provider.stage}
+    USER_TABLE: useer-table-${self:provider.stage}
     USER_PAYMENT_TABLE: user-payments-table-${self:provider.stage}
     # 'iamRoleStatements' defines the permission policy for the Lambda function.
     # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -107,10 +107,10 @@ resources:
       Properties:
         TableName: ${self:provider.environment.USER_TABLE}
         AttributeDefinitions:
-          - AttributeName: ID
+          - AttributeName: userId
             AttributeType: S
         KeySchema:
-          - AttributeName: ID
+          - AttributeName: userId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
