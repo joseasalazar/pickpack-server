@@ -68,24 +68,6 @@ dynamoDb = new AWS.DynamoDB.DocumentClient();
 //       return false;
 //     });
 
-// const getUser = userId =>
-//   promisify(callback =>
-//     dynamoDb.get(
-//       {
-//         TableName: process.env.USER_TABLE,
-//         Key: { userId }
-//       },
-//       callback
-//     )
-//   )
-//     .then(result => {
-//       if (!result.Item) {
-//         return userId;
-//       }
-//       return result.Item;
-//     })
-//     .catch(error => console.error(error));
-
 // const updateUser = (userId, country) =>
 //   promisify(callback =>
 //     dynamoDb.update(
@@ -113,7 +95,8 @@ const resolvers = {
     post: (_, args, context) => post(args, context),
     signup: (_, args) => signup(args),
     createUser: (_, args) => createUserBD(args),
-    login: (_, args) => login(args)
+    login: (_, args) => login(args),
+    getUserByMail: (_, args) => getUserByEmail(args)
   }
 };
 
@@ -128,8 +111,9 @@ const createUserBD = user =>
           name: user.name,
           email: user.email
         },
-        ConditionExpression: "attribute_not_exists(#u)",
-        ExpressionAttributeNames: { "#u": "userId" },
+        ConditionExpression:
+          "attribute_not_exists(#u) AND attribute_not_exists(#e)",
+        ExpressionAttributeNames: { "#u": "userId", "#e": "email" },
         ReturnValues: "ALL_OLD"
       },
       callback
@@ -137,21 +121,48 @@ const createUserBD = user =>
   )
     .then(result => user)
     .catch(error => {
-      console.log(error);
-      return false;
+      throw new Error(error);
     });
 
-function post(args, context) {
-  const user = getUserId(context);
-  const link = {
-    id: uuid(),
-    description: args.description,
-    url: args.url,
-    postedBy: user.user
-  };
-  links.push(link);
-  return link;
-}
+const getUserByID = userId =>
+  promisify(callback =>
+    dynamoDb.get(
+      {
+        TableName: process.env.USER_TABLE,
+        Key: { userId }
+      },
+      callback
+    )
+  )
+    .then(result => {
+      if (!result.Item) {
+        return userId;
+      }
+      return result.Item;
+    })
+    .catch(error => {
+      throw new Error(error);
+    });
+
+const getUserByEmail = email =>
+  promisify(callback =>
+    dynamoDb.get(
+      {
+        TableName: process.env.USER_TABLE,
+        Key: { email }
+      },
+      callback
+    )
+  )
+    .then(result => {
+      if (!result.Item) {
+        return email;
+      }
+      return result.Item;
+    })
+    .catch(error => {
+      throw new Error(error);
+    });
 
 async function signup(args) {
   var password;
@@ -182,7 +193,7 @@ async function signup(args) {
 }
 
 async function login(args) {
-  const user = users.find(user => user.email === args.email);
+  const user = await getUserByEmail(args.email);
   if (!user) {
     throw new Error("No such user found");
   }
@@ -208,10 +219,23 @@ async function login(args) {
   };
 }
 
+function post(args, context) {
+  const user = getUserId(context);
+  const link = {
+    id: uuid(),
+    description: args.description,
+    url: args.url,
+    postedBy: user.user
+  };
+  // links.push(link);
+  return link;
+}
+
 function getUserId(context) {
-  const Authorization = context.headers.authorization || "";
+  const Authorization = context.headers.Authorization || "";
   if (Authorization) {
-    const token = Authorization.replace("Bearer ", "");
+    var token = Authorization.replace("Bearer ", "");
+    token = token.substring(2, token.length - 1);
     var user;
     jwt.verify(token, config.APP_SECRET, (err, decoded) => {
       if (err) {
@@ -229,7 +253,5 @@ function getUserId(context) {
 
   throw new Error("Not authenticated");
 }
-
-module.exports = resolvers;
 
 module.exports = resolvers;

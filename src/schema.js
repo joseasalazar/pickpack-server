@@ -69,6 +69,7 @@ const typeDefs = gql`
     signup(email: String!, password: String!, name: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
     createUser(name: String!, email: String!, password: String!): User
+    getUserByMail(email: String!): User
   }
 
   type Link {
