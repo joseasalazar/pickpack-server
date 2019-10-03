@@ -94,9 +94,9 @@ const resolvers = {
   Mutation: {
     post: (_, args, context) => post(args, context),
     signup: (_, args) => signup(args),
-    createUser: (_, args) => createUserBD(args),
-    login: (_, args) => login(args),
-    getUserByMail: (_, args) => getUserByEmail(args)
+    // createUser: (_, args) => createUserBD(args),
+    login: (_, args) => login(args)
+    // getUserByID: (_, { userId }) => getUserByID(userId)
   }
 };
 
@@ -106,14 +106,12 @@ const createUserBD = user =>
       {
         TableName: process.env.USER_TABLE,
         Item: {
-          userId: uuid(),
+          userId: user.email,
           password: user.password,
-          name: user.name,
-          email: user.email
+          name: user.name
         },
-        ConditionExpression:
-          "attribute_not_exists(#u) AND attribute_not_exists(#e)",
-        ExpressionAttributeNames: { "#u": "userId", "#e": "email" },
+        ConditionExpression: "attribute_not_exists(#u)",
+        ExpressionAttributeNames: { "#u": "userId" },
         ReturnValues: "ALL_OLD"
       },
       callback
@@ -137,26 +135,6 @@ const getUserByID = userId =>
     .then(result => {
       if (!result.Item) {
         return userId;
-      }
-      return result.Item;
-    })
-    .catch(error => {
-      throw new Error(error);
-    });
-
-const getUserByEmail = email =>
-  promisify(callback =>
-    dynamoDb.get(
-      {
-        TableName: process.env.USER_TABLE,
-        Key: { email }
-      },
-      callback
-    )
-  )
-    .then(result => {
-      if (!result.Item) {
-        return email;
       }
       return result.Item;
     })
@@ -193,7 +171,7 @@ async function signup(args) {
 }
 
 async function login(args) {
-  const user = await getUserByEmail(args.email);
+  const user = await getUserByID(args.email);
   if (!user) {
     throw new Error("No such user found");
   }
