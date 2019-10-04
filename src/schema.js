@@ -1,5 +1,6 @@
 // Construct a schema, using GraphQL schema language
 const { gql } = require("apollo-server");
+// import { GraphQLDate, GraphQLTime, GraphQLDateTime } from "graphql-iso-date";
 
 const typeDefs = gql`
   # scalar Date
@@ -9,8 +10,8 @@ const typeDefs = gql`
   #   tourName: String
   #   tourPrice: Int
   #   tourDiscount: Int
-  #   tourStartDate: Date
-  #   tourEndDate: Date
+  #   tourStartDate: GraphQLDateTime
+  #   tourEndDate: GraphQLDateTime
   #   tourType: String
   #   tourQuantity: Int
   #   tourStatus: Int
@@ -33,7 +34,7 @@ const typeDefs = gql`
   #   orderId: ID
   #   orderItems: [OrderItem]!
   #   customerIds: [Customer]!
-  #   orderDate: Date!
+  #   orderDate: GraphQLDateTime!
   # }
 
   # type OrderItem {
@@ -55,7 +56,7 @@ const typeDefs = gql`
   # type UserPayment {
   #   userPaymentId: ID
   #   userId: User!
-  #   paymentDate: Date!
+  #   paymentDate: GraphQLDateTime!
   #   oderId: Order!
   # }
 
@@ -68,8 +69,6 @@ const typeDefs = gql`
     post(url: String!, description: String!): Link!
     signup(email: String!, password: String!, name: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
-    # createUser(name: String!, email: String!, password: String!): User
-    # getUserByID(userId: String!): User
   }
 
   type Link {
