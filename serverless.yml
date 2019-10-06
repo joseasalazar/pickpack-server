@@ -12,7 +12,7 @@ provider:
     TOUR_PROVIDER_TABLE: tour-providers-table-${self:provider.stage}
     ORDER_TABLE: orders-table-${self:provider.stage}
     ORDER_ITEM_TABLE: order-items-table-${self:provider.stage}
-    USER_TABLE: useer-table-${self:provider.stage}
+    USER_TABLE: user-table-${self:provider.stage}
     USER_PAYMENT_TABLE: user-payments-table-${self:provider.stage}
     # 'iamRoleStatements' defines the permission policy for the Lambda function.
     # In this case Lambda functions are granted with permissions to access DynamoDB.

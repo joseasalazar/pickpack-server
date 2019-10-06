@@ -15,7 +15,7 @@
         "TOUR_PROVIDER_TABLE": "tour-providers-table-dev",
         "ORDER_TABLE": "orders-table-dev",
         "ORDER_ITEM_TABLE": "order-items-table-dev",
-        "USER_TABLE": "useer-table-dev",
+        "USER_TABLE": "user-table-dev",
         "USER_PAYMENT_TABLE": "user-payments-table-dev"
       },
       "iamRoleStatements": [
@@ -145,7 +145,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/pickpack-api-graphql/dev/1570214768148-2019-10-04T18:46:08.148Z/pickpack-api-graphql.zip"
+                "S3Key": "serverless/pickpack-api-graphql/dev/1570397935073-2019-10-06T21:38:55.073Z/pickpack-api-graphql.zip"
               },
               "FunctionName": "pickpack-api-graphql-dev-graphql",
               "Handler": "handler.graphql",
@@ -165,7 +165,7 @@
                   "TOUR_PROVIDER_TABLE": "tour-providers-table-dev",
                   "ORDER_TABLE": "orders-table-dev",
                   "ORDER_ITEM_TABLE": "order-items-table-dev",
-                  "USER_TABLE": "useer-table-dev",
+                  "USER_TABLE": "user-table-dev",
                   "USER_PAYMENT_TABLE": "user-payments-table-dev"
                 }
               }
@@ -175,14 +175,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "GraphqlLambdaVersionWzMtIbjyQhnHtardU4iMWa8MU7IjwHeB2EG4xUb0": {
+          "GraphqlLambdaVersion5qeMeP8oU3t6XHwgdEbJQhpaXD9Z6AWo6WCxIlgkIU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GraphqlLambdaFunction"
               },
-              "CodeSha256": "TQuxFYV4QkmU4MmOa8UpyUhMZfbT2HLlS/m7G6NT/FA="
+              "CodeSha256": "jv1smIv4c4IzUu1EPy/5Z2sswphr4HCz6hCpVnH0vt0="
             }
           },
           "ApiGatewayRestApi": {
@@ -344,7 +344,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1570214754879": {
+          "ApiGatewayDeployment1570397919445": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -508,7 +508,7 @@
           "UserTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
-              "TableName": "useer-table-dev",
+              "TableName": "user-table-dev",
               "AttributeDefinitions": [
                 {
                   "AttributeName": "userId",
@@ -559,7 +559,7 @@
           "GraphqlLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GraphqlLambdaVersionWzMtIbjyQhnHtardU4iMWa8MU7IjwHeB2EG4xUb0"
+              "Ref": "GraphqlLambdaVersion5qeMeP8oU3t6XHwgdEbJQhpaXD9Z6AWo6WCxIlgkIU"
             }
           },
           "ServiceEndpoint": {
@@ -797,7 +797,7 @@
         "UserTable": {
           "Type": "AWS::DynamoDB::Table",
           "Properties": {
-            "TableName": "useer-table-dev",
+            "TableName": "user-table-dev",
             "AttributeDefinitions": [
               {
                 "AttributeName": "userId",
@@ -846,7 +846,7 @@
     "artifact": "/Users/joseandressalazar/Desktop/9vno/Lab/pickpack-server/.serverless/pickpack-api-graphql.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/pickpack-api-graphql/dev/1570214768148-2019-10-04T18:46:08.148Z",
+    "artifactDirectoryName": "serverless/pickpack-api-graphql/dev/1570397935073-2019-10-06T21:38:55.073Z",
     "artifact": "pickpack-api-graphql.zip"
   }
 }
