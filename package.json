@@ -11,6 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.9.4",
-    "graphql": "^14.5.7"
+    "apollo-server-lambda": "^2.9.4",
+    "aws-sdk": "^2.537.0",
+    "bcryptjs": "^2.4.3",
+    "graphql": "^14.5.7",
+    "graphql-iso-date": "^3.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "serverless": "^1.53.0",
+    "uuidv4": "^5.0.1"
   }
 }

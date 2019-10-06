@@ -1,0 +1,852 @@
+{
+  "service": {
+    "service": "pickpack-api-graphql",
+    "serviceObject": {
+      "name": "pickpack-api-graphql"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*]+?)}",
+      "name": "aws",
+      "runtime": "nodejs8.10",
+      "environment": {
+        "TOUR_TABLE": "tours-table-dev",
+        "TOUR_PHOTO_TABLE": "tour-photos-table-dev",
+        "TOUR_PROVIDER_TABLE": "tour-providers-table-dev",
+        "ORDER_TABLE": "orders-table-dev",
+        "ORDER_ITEM_TABLE": "order-items-table-dev",
+        "USER_TABLE": "user-table-dev",
+        "USER_PAYMENT_TABLE": "user-payments-table-dev"
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem"
+          ],
+          "Resource": "arn:aws:dynamodb:us-east-1:*:table/*"
+        }
+      ],
+      "region": "us-east-1",
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "GraphqlLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/pickpack-api-graphql-dev-graphql"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "dev",
+                        "pickpack-api-graphql",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/pickpack-api-graphql-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/pickpack-api-graphql-dev*:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "pickpack-api-graphql",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "GraphqlLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/pickpack-api-graphql/dev/1570397935073-2019-10-06T21:38:55.073Z/pickpack-api-graphql.zip"
+              },
+              "FunctionName": "pickpack-api-graphql-dev-graphql",
+              "Handler": "handler.graphql",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs8.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "TOUR_TABLE": "tours-table-dev",
+                  "TOUR_PHOTO_TABLE": "tour-photos-table-dev",
+                  "TOUR_PROVIDER_TABLE": "tour-providers-table-dev",
+                  "ORDER_TABLE": "orders-table-dev",
+                  "ORDER_ITEM_TABLE": "order-items-table-dev",
+                  "USER_TABLE": "user-table-dev",
+                  "USER_PAYMENT_TABLE": "user-payments-table-dev"
+                }
+              }
+            },
+            "DependsOn": [
+              "GraphqlLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "GraphqlLambdaVersion5qeMeP8oU3t6XHwgdEbJQhpaXD9Z6AWo6WCxIlgkIU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GraphqlLambdaFunction"
+              },
+              "CodeSha256": "jv1smIv4c4IzUu1EPy/5Z2sswphr4HCz6hCpVnH0vt0="
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-pickpack-api-graphql",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              }
+            }
+          },
+          "ApiGatewayResourceGraphql": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "graphql",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodGraphqlOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true,
+                    "method.response.header.Access-Control-Allow-Credentials": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,POST'",
+                      "method.response.header.Access-Control-Allow-Credentials": "'false'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".*\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceGraphql"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodGraphqlPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceGraphql"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GraphqlLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodGraphqlGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceGraphql"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GraphqlLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1570397919445": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodGraphqlOptions",
+              "ApiGatewayMethodGraphqlPost",
+              "ApiGatewayMethodGraphqlGet"
+            ]
+          },
+          "GraphqlLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GraphqlLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "TourTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "tours-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "tourId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "tourId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "TourPhotoTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "tour-photos-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "tourPhotoId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "tourPhotoId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "TourProviderTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "tour-providers-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "tourProviderId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "tourProviderId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "OrderTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "orders-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "orderId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "orderId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "OrderItemTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "order-items-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "orderItemId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "orderItemId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "UserTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "user-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          },
+          "UserPaymentTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "user-payments-table-dev",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userPaymentId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userPaymentId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "GraphqlLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GraphqlLambdaVersion5qeMeP8oU3t6XHwgdEbJQhpaXD9Z6AWo6WCxIlgkIU"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "graphql": {
+        "handler": "handler.graphql",
+        "events": [
+          {
+            "http": {
+              "path": "graphql",
+              "method": "post",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          },
+          {
+            "http": {
+              "path": "graphql",
+              "method": "get",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "pickpack-api-graphql-dev-graphql",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs8.10",
+        "vpc": {}
+      }
+    },
+    "resources": {
+      "Resources": {
+        "TourTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "tours-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "tourId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "tourId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "TourPhotoTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "tour-photos-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "tourPhotoId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "tourPhotoId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "TourProviderTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "tour-providers-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "tourProviderId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "tourProviderId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "OrderTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "orders-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "orderId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "orderId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "OrderItemTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "order-items-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "orderItemId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "orderItemId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "UserTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "user-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "userId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        },
+        "UserPaymentTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "user-payments-table-dev",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "userPaymentId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "userPaymentId",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        }
+      },
+      "Outputs": {}
+    },
+    "serviceFilename": "serverless.yml",
+    "layers": {},
+    "artifact": "/Users/joseandressalazar/Desktop/9vno/Lab/pickpack-server/.serverless/pickpack-api-graphql.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/pickpack-api-graphql/dev/1570397935073-2019-10-06T21:38:55.073Z",
+    "artifact": "pickpack-api-graphql.zip"
+  }
+}
