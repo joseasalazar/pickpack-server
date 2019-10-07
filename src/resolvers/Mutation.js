@@ -5,6 +5,7 @@ const {
   config,
   getUserByMail,
   createUserBD,
+  registerTourBD,
   getUserIdAuth
 } = require("../utils");
 
@@ -64,6 +65,26 @@ async function login(_, args) {
   };
 }
 
+async function registerTour(_, args, context) {
+  const user = getUserIdAuth(context);
+  const newTour = {
+    tourId: uuid(),
+    name: args.name,
+    price: args.price,
+    startDate: args.startDate,
+    endDate: args.endDate,
+    type: args.type,
+    createdAt: new Date().toString(),
+    createdBy: user.user
+  };
+  const tour = await registerTourBD(newTour);
+  if (tour) {
+    return true;
+  } else {
+    throw new Error("Internal Server Error (500)");
+  }
+}
+
 function post(_, args, context) {
   const user = getUserIdAuth(context);
   const link = {
@@ -79,5 +100,6 @@ function post(_, args, context) {
 module.exports = {
   signup,
   login,
+  registerTour,
   post
 };

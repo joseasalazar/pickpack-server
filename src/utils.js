@@ -11,29 +11,7 @@ const config = {
 
 dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-const createUserBD = user =>
-  promisify(callback =>
-    dynamoDb.put(
-      {
-        TableName: process.env.USER_TABLE,
-        Item: {
-          userId: user.userId,
-          password: user.password,
-          name: user.name,
-          email: user.email
-        },
-        ConditionExpression: "attribute_not_exists(#u)",
-        ExpressionAttributeNames: { "#u": "userId" },
-        ReturnValues: "ALL_OLD"
-      },
-      callback
-    )
-  )
-    .then(result => user)
-    .catch(error => {
-      throw new Error(error);
-    });
-
+//GETS
 const getUserByMail = email =>
   promisify(callback =>
     dynamoDb.scan(
@@ -61,6 +39,58 @@ const getUserByMail = email =>
       throw new Error(error);
     });
 
+//CREATES
+const createUserBD = user =>
+  promisify(callback =>
+    dynamoDb.put(
+      {
+        TableName: process.env.USER_TABLE,
+        Item: {
+          userId: user.userId,
+          password: user.password,
+          name: user.name,
+          email: user.email
+        },
+        ConditionExpression: "attribute_not_exists(#u)",
+        ExpressionAttributeNames: { "#u": "userId" },
+        ReturnValues: "ALL_OLD"
+      },
+      callback
+    )
+  )
+    .then(result => user)
+    .catch(error => {
+      throw new Error(error);
+    });
+
+const registerTourBD = tour =>
+  promisify(callback =>
+    dynamoDb.put(
+      {
+        TableName: process.env.TOUR_TABLE,
+        Item: {
+          tourId: tour.tourId,
+          name: tour.name,
+          price: tour.price,
+          startDate: tour.startDate,
+          endDate: tour.endDate,
+          type: tour.type,
+          createdAt: tour.createdAt,
+          createdBy: tour.createdBy
+        },
+        ConditionExpression: "attribute_not_exists(#t)",
+        ExpressionAttributeNames: { "#t": "tourId" },
+        ReturnValues: "ALL_OLD"
+      },
+      callback
+    )
+  )
+    .then(result => tour)
+    .catch(error => {
+      throw new Error(error);
+    });
+
+//AUTHENTICATION
 function getUserIdAuth(context) {
   const Authorization = context.headers.Authorization || "";
   if (Authorization) {
@@ -86,7 +116,8 @@ function getUserIdAuth(context) {
 
 module.exports = {
   config,
-  createUserBD,
   getUserByMail,
+  createUserBD,
+  registerTourBD,
   getUserIdAuth
 };

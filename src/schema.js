@@ -1,74 +1,82 @@
 // Construct a schema, using GraphQL schema language
 const { gql } = require("apollo-server");
-// import { GraphQLDate, GraphQLTime, GraphQLDateTime } from "graphql-iso-date";
 
 const typeDefs = gql`
-  # scalar Date
+  type TourProvider {
+    tourProviderId: ID!
+    name: String!
+    email: String!
+    tour: [Tour]
+  }
 
-  # type Tour {
-  #   tourId: ID
-  #   tourName: String
-  #   tourPrice: Int
-  #   tourDiscount: Int
-  #   tourStartDate: GraphQLDateTime
-  #   tourEndDate: GraphQLDateTime
-  #   tourType: String
-  #   tourQuantity: Int
-  #   tourStatus: Int
-  #   tourPhoto: [TourPhoto]
+  type TourPhoto {
+    tourPhotoId: ID!
+    url: String!
+  }
+
+  type Order {
+    orderId: ID!
+    items: [OrderItem!]!
+    customer: User!
+    date: String!
+  }
+
+  type OrderItem {
+    orderItemId: ID!
+    tour: Tour!
+    quantity: Int!
+    price: Int!
+  }
+
+  # type User {
+  #   userId: ID
+  #   type: Int
+  #   firstName: String
+  #   lastName: String
+  #   email: String
+  #   password: String
+  #   type: UserType
   # }
 
-  # type TourProvider {
-  #   tourProviderId: ID
-  #   tourProviderName: String
-  #   tourProviderEmail: String
-  #   tourId: [Tour]
-  # }
+  type UserPayment {
+    userPaymentId: ID!
+    user: User!
+    date: String!
+    order: Order!
+  }
 
-  # type TourPhoto {
-  #   tourPhotoId: ID
-  #   tourPhotoURL: String
-  # }
-
-  # type Order {
-  #   orderId: ID
-  #   orderItems: [OrderItem]!
-  #   customerIds: [Customer]!
-  #   orderDate: GraphQLDateTime!
-  # }
-
-  # type OrderItem {
-  #   orderItemId: ID
-  #   tourId: Tour!
-  #   itemQuantity: Int!
-  #   itemPrice: Int!
-  # }
-
-  # # type User {
-  # #   userId: ID
-  # #   type: Int
-  # #   firstName: String
-  # #   lastName: String
-  # #   email: String
-  # #   password: String
-  # # }
-
-  # type UserPayment {
-  #   userPaymentId: ID
-  #   userId: User!
-  #   paymentDate: GraphQLDateTime!
-  #   oderId: Order!
-  # }
+  type Tour {
+    tourId: ID!
+    name: String!
+    price: Int!
+    discount: Int
+    startDate: String!
+    endDate: String!
+    type: String!
+    quantity: Int
+    status: Int
+    photo: [TourPhoto!]
+    createdAt: String!
+    createdBy: User!
+  }
 
   type Query {
     info: String!
     feed: [Link!]!
     users: [User!]!
   }
+
   type Mutation {
     post(url: String!, description: String!): Link!
     signup(email: String!, password: String!, name: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
+    registerTour(
+      name: String!
+      price: Int!
+      startDate: String!
+      endDate: String!
+      type: String!
+    ): Boolean!
   }
 
   type Link {
@@ -79,8 +87,8 @@ const typeDefs = gql`
   }
 
   type AuthPayload {
-    token: String
-    user: User
+    token: String!
+    user: User!
   }
 
   type User {
@@ -89,6 +97,12 @@ const typeDefs = gql`
     email: String!
     password: String!
     links: [Link]
+  }
+
+  enum UserType {
+    ADMIN
+    CUSTOMER
+    PROVIDER
   }
 `;
 
