@@ -79,27 +79,14 @@ async function registerTour(_, args, context) {
   };
   const tour = await registerTourBD(newTour);
   if (tour) {
-    return true;
+    return tour;
   } else {
     throw new Error("Internal Server Error (500)");
   }
 }
 
-function post(_, args, context) {
-  const user = getUserIdAuth(context);
-  const link = {
-    id: uuid(),
-    description: args.description,
-    url: args.url,
-    postedBy: user.user
-  };
-  // links.push(link);
-  return link;
-}
-
 module.exports = {
   signup,
   login,
-  registerTour,
-  post
+  registerTour
 };

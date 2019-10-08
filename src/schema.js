@@ -6,6 +6,9 @@ const typeDefs = gql`
     tourProviderId: ID!
     name: String!
     email: String!
+    rfc: String!
+    city: String!
+    country: String!
     tour: [Tour]
   }
 
@@ -28,16 +31,6 @@ const typeDefs = gql`
     price: Int!
   }
 
-  # type User {
-  #   userId: ID
-  #   type: Int
-  #   firstName: String
-  #   lastName: String
-  #   email: String
-  #   password: String
-  #   type: UserType
-  # }
-
   type UserPayment {
     userPaymentId: ID!
     user: User!
@@ -49,6 +42,9 @@ const typeDefs = gql`
     tourId: ID!
     name: String!
     price: Int!
+    daysAvailable: Int
+    clasification: TourClassification
+    cancellartionPolicy: TourPolicy
     discount: Int
     startDate: String!
     endDate: String!
@@ -58,32 +54,6 @@ const typeDefs = gql`
     photo: [TourPhoto!]
     createdAt: String!
     createdBy: User!
-  }
-
-  type Query {
-    info: String!
-    feed: [Link!]!
-    users: [User!]!
-  }
-
-  type Mutation {
-    post(url: String!, description: String!): Link!
-    signup(email: String!, password: String!, name: String!): AuthPayload
-    login(email: String!, password: String!): AuthPayload
-    registerTour(
-      name: String!
-      price: Int!
-      startDate: String!
-      endDate: String!
-      type: String!
-    ): Boolean!
-  }
-
-  type Link {
-    id: ID!
-    description: String!
-    url: String!
-    postedBy: User
   }
 
   type AuthPayload {
@@ -96,13 +66,59 @@ const typeDefs = gql`
     name: String!
     email: String!
     password: String!
-    links: [Link]
+    type: UserType!
+    birthDate: String!
+    gender: String!
+    city: String!
+    country: String!
+    createdAt: String!
+  }
+
+  type Query {
+    info: String!
+    users: [User!]!
+    tourProviders: [TourProvider!]!
+    tours: [Tours!]!
+    orders: [Orders!]!
+  }
+
+  type Mutation {
+    post(url: String!, description: String!): Link!
+    signup(
+      email: String!
+      password: String!
+      name: String!
+      birthDate: String!
+      gender: String!
+      city: String!
+      country: String!
+    ): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+    registerTour(
+      name: String!
+      price: Int!
+      startDate: String!
+      endDate: String!
+      type: String!
+    ): Tour!
   }
 
   enum UserType {
     ADMIN
     CUSTOMER
     PROVIDER
+  }
+
+  enum TourClassification {
+    POPULAR
+    FAVORITE
+    BEST_SELLER
+  }
+
+  enum TourPolicy {
+    SOFT
+    MEDIUM
+    HARD
   }
 `;
 

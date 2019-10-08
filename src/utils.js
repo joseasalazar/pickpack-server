@@ -49,7 +49,13 @@ const createUserBD = user =>
           userId: user.userId,
           password: user.password,
           name: user.name,
-          email: user.email
+          email: user.email,
+          type: "CUSTOMER",
+          birthDate: user.birthDate,
+          gender: user.gender,
+          city: user.city,
+          country: user.country,
+          createdAt: new Date().toString()
         },
         ConditionExpression: "attribute_not_exists(#u)",
         ExpressionAttributeNames: { "#u": "userId" },
