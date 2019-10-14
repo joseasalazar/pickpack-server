@@ -66,7 +66,7 @@ const typeDefs = gql`
     name: String!
     email: String!
     password: String!
-    type: UserType!
+    type: String!
     birthDate: String!
     gender: String!
     city: String!
@@ -74,16 +74,20 @@ const typeDefs = gql`
     createdAt: String!
   }
 
+  type S3Payload {
+    signedRequest: String!
+    url: String!
+  }
+
   type Query {
     info: String!
     users: [User!]!
     tourProviders: [TourProvider!]!
-    tours: [Tours!]!
-    orders: [Orders!]!
+    tours: [Tour!]!
+    orders: [Order!]!
   }
 
   type Mutation {
-    post(url: String!, description: String!): Link!
     signup(
       email: String!
       password: String!
@@ -92,8 +96,9 @@ const typeDefs = gql`
       gender: String!
       city: String!
       country: String!
-    ): AuthPayload
-    login(email: String!, password: String!): AuthPayload
+      type: String!
+    ): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
     registerTour(
       name: String!
       price: Int!
@@ -101,12 +106,8 @@ const typeDefs = gql`
       endDate: String!
       type: String!
     ): Tour!
-  }
-
-  enum UserType {
-    ADMIN
-    CUSTOMER
-    PROVIDER
+    registerImage(url: String!): TourPhoto!
+    uploadToS3(filename: String!, filetype: String!): S3Payload!
   }
 
   enum TourClassification {

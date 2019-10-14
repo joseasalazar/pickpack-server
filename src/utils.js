@@ -9,6 +9,14 @@ const config = {
   ALGORITHM: "HS256"
 };
 
+const userTypes = {
+  admin: "sSc3sSkWVAcnAFA6nf/N6A==",
+  customer: "/eCXmXakLrDc8BHabm+gAw==",
+  provider: "yewblyw4X+tPevioSPgGAA=="
+};
+
+const s3Bucket = "pickpack-tours-images";
+
 dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 //GETS
@@ -17,12 +25,17 @@ const getUserByMail = email =>
     dynamoDb.scan(
       {
         TableName: process.env.USER_TABLE,
-        ProjectionExpression: "#n, userId, #p, #e",
+        ProjectionExpression: "#n, userId, #p, #e, #b, #c, #co, #g, #t",
         FilterExpression: "#e = :var",
         ExpressionAttributeNames: {
           "#n": "name",
           "#p": "password",
-          "#e": "email"
+          "#e": "email",
+          "#b": "birthDate",
+          "#c": "city",
+          "#co": "country",
+          "#g": "gender",
+          "#t": "type"
         },
         ExpressionAttributeValues: { ":var": email }
       },
@@ -40,6 +53,27 @@ const getUserByMail = email =>
     });
 
 //CREATES
+const postImageBD = tourPhoto =>
+  promisify(callback =>
+    dynamoDb.put(
+      {
+        TableName: process.env.TOUR_PHOTO_TABLE,
+        Item: {
+          tourPhotoId: tourPhoto.tourPhotoId,
+          url: tourPhoto.url
+        },
+        ConditionExpression: "attribute_not_exists(#i)",
+        ExpressionAttributeNames: { "#i": "tourPhotoId" },
+        ReturnValues: "ALL_OLD"
+      },
+      callback
+    )
+  )
+    .then(result => tourPhoto)
+    .catch(error => {
+      throw new Error(error);
+    });
+
 const createUserBD = user =>
   promisify(callback =>
     dynamoDb.put(
@@ -50,7 +84,7 @@ const createUserBD = user =>
           password: user.password,
           name: user.name,
           email: user.email,
-          type: "CUSTOMER",
+          type: user.type,
           birthDate: user.birthDate,
           gender: user.gender,
           city: user.city,
@@ -97,11 +131,10 @@ const registerTourBD = tour =>
     });
 
 //AUTHENTICATION
-function getUserIdAuth(context) {
+function getUserAuth(context) {
   const Authorization = context.headers.Authorization || "";
   if (Authorization) {
     var token = Authorization.replace("Bearer ", "");
-    token = token.substring(1);
     var user;
     jwt.verify(token, config.APP_SECRET, (err, decoded) => {
       if (err) {
@@ -122,8 +155,11 @@ function getUserIdAuth(context) {
 
 module.exports = {
   config,
+  userTypes,
+  s3Bucket,
   getUserByMail,
+  postImageBD,
   createUserBD,
   registerTourBD,
-  getUserIdAuth
+  getUserAuth
 };
