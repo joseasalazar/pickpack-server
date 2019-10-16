@@ -4,11 +4,12 @@ API made with GraphQL using apollo-server-lambda with AWS DynamoDB.
 
 - [Current URL](#Current-URL)
 - [Headers for Auth and middleware](#Headers-for-Auth-and-Middleware)
+- [Post Tour](#Post-Tour)
+- [Upload Image To S3 Bucket](#Upload-Image-To-S3-Bucket)
+- [Post Image](#Post-Image)
 - [New User](#New-User)
 - [Login User](#Login-User)
 - [Get Tours](#Get-Tours)
-- [Upload Image To S3 Bucket](#Upload-Image-To-S3-Bucket)
-- [Post Image](#Post-Image)
 
 ### Current URL
 
@@ -28,7 +29,7 @@ https://u2mqz07q4e.execute-api.us-east-1.amazonaws.com/dev/graphql
 | --------- | ----------------------------------------- |
 | token     | Token retrieved after a successful login. |
 
-#### Post Tours
+#### Post Tour
 
 | Parameter | Description                                     | Required |
 | --------- | ----------------------------------------------- | -------- |
