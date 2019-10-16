@@ -52,7 +52,7 @@ const typeDefs = gql`
     type: String!
     quantity: Int
     status: Int
-    photo: [TourPhoto!]
+    photo: TourPhoto
     createdAt: String!
     createdBy: User!
   }
