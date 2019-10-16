@@ -9,27 +9,27 @@ const config = {
   ALGORITHM: "HS256"
 };
 
+const userTypes = {
+  admin: "sSc3sSkWVAcnAFA6nf/N6A==",
+  customer: "/eCXmXakLrDc8BHabm+gAw==",
+  provider: "yewblyw4X+tPevioSPgGAA=="
+};
+
+const s3Bucket = "pickpack-tours-images";
+
 dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-const createUserBD = user =>
+//GETS
+const getTours = () =>
   promisify(callback =>
-    dynamoDb.put(
+    dynamoDb.scan(
       {
-        TableName: process.env.USER_TABLE,
-        Item: {
-          userId: user.userId,
-          password: user.password,
-          name: user.name,
-          email: user.email
-        },
-        ConditionExpression: "attribute_not_exists(#u)",
-        ExpressionAttributeNames: { "#u": "userId" },
-        ReturnValues: "ALL_OLD"
+        TableName: process.env.TOUR_TABLE
       },
       callback
     )
   )
-    .then(result => user)
+    .then(result => result.Items)
     .catch(error => {
       throw new Error(error);
     });
@@ -39,12 +39,17 @@ const getUserByMail = email =>
     dynamoDb.scan(
       {
         TableName: process.env.USER_TABLE,
-        ProjectionExpression: "#n, userId, #p, #e",
+        ProjectionExpression: "#n, userId, #p, #e, #b, #c, #co, #g, #t",
         FilterExpression: "#e = :var",
         ExpressionAttributeNames: {
           "#n": "name",
           "#p": "password",
-          "#e": "email"
+          "#e": "email",
+          "#b": "birthDate",
+          "#c": "city",
+          "#co": "country",
+          "#g": "gender",
+          "#t": "type"
         },
         ExpressionAttributeValues: { ":var": email }
       },
@@ -61,18 +66,97 @@ const getUserByMail = email =>
       throw new Error(error);
     });
 
-function getUserIdAuth(context) {
+//CREATES
+const postImageBD = tourPhoto =>
+  promisify(callback =>
+    dynamoDb.put(
+      {
+        TableName: process.env.TOUR_PHOTO_TABLE,
+        Item: {
+          tourPhotoId: tourPhoto.tourPhotoId,
+          url: tourPhoto.url
+        },
+        ConditionExpression: "attribute_not_exists(#i)",
+        ExpressionAttributeNames: { "#i": "tourPhotoId" },
+        ReturnValues: "ALL_OLD"
+      },
+      callback
+    )
+  )
+    .then(result => tourPhoto)
+    .catch(error => {
+      throw new Error(error);
+    });
+
+const createUserBD = user =>
+  promisify(callback =>
+    dynamoDb.put(
+      {
+        TableName: process.env.USER_TABLE,
+        Item: {
+          userId: user.userId,
+          password: user.password,
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          birthDate: user.birthDate,
+          gender: user.gender,
+          city: user.city,
+          country: user.country,
+          createdAt: new Date().toString()
+        },
+        ConditionExpression: "attribute_not_exists(#u)",
+        ExpressionAttributeNames: { "#u": "userId" },
+        ReturnValues: "ALL_OLD"
+      },
+      callback
+    )
+  )
+    .then(result => user)
+    .catch(error => {
+      throw new Error(error);
+    });
+
+const registerTourBD = tour =>
+  promisify(callback =>
+    dynamoDb.put(
+      {
+        TableName: process.env.TOUR_TABLE,
+        Item: {
+          tourId: tour.tourId,
+          name: tour.name,
+          price: tour.price,
+          startDate: tour.startDate,
+          endDate: tour.endDate,
+          type: tour.type,
+          createdAt: tour.createdAt,
+          createdBy: tour.createdBy
+        },
+        ConditionExpression: "attribute_not_exists(#t)",
+        ExpressionAttributeNames: { "#t": "tourId" },
+        ReturnValues: "ALL_OLD"
+      },
+      callback
+    )
+  )
+    .then(result => tour)
+    .catch(error => {
+      throw new Error(error);
+    });
+
+//AUTHENTICATION
+function getUserAuth(context) {
   const Authorization = context.headers.Authorization || "";
   if (Authorization) {
     var token = Authorization.replace("Bearer ", "");
-    token = token.substring(1);
+    // throw new Error(token);
     var user;
     jwt.verify(token, config.APP_SECRET, (err, decoded) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
           throw new Error("Expired Token");
         } else {
-          throw new Error("Authentication Token Error");
+          throw new Error(err);
         }
       } else {
         user = decoded;
@@ -86,7 +170,12 @@ function getUserIdAuth(context) {
 
 module.exports = {
   config,
-  createUserBD,
+  userTypes,
+  s3Bucket,
+  getTours,
   getUserByMail,
-  getUserIdAuth
+  postImageBD,
+  createUserBD,
+  registerTourBD,
+  getUserAuth
 };

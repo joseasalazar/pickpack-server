@@ -6,6 +6,9 @@ API made with GraphQL using apollo-server-lambda with AWS DynamoDB.
 - [Headers for Auth and middleware](#Headers-for-Auth-and-Middleware)
 - [New User](#New-User)
 - [Login User](#Login-User)
+- [Get Tours](#Get-Tours)
+- [Upload Image To S3 Bucket](#Upload-Image-To-S3-Bucket)
+- [Post Image](#Post-Image)
 
 ### Current URL
 
@@ -24,6 +27,41 @@ https://u2mqz07q4e.execute-api.us-east-1.amazonaws.com/dev/graphql
 | Parameter | Description                               |
 | --------- | ----------------------------------------- |
 | token     | Token retrieved after a successful login. |
+
+#### Upload Image To S3 Bucket
+
+| Parameter | Description                            | Required |
+| --------- | -------------------------------------- | -------- |
+| filename  | string: The complete name of the file. | YES      |
+| filetype  | string: The file formar.               | YES      |
+
+###### Request Example
+
+```
+mutation uploadToS3($filename: String!, $filetype: String!) {
+    uploadToS3(filename: $filename, filetype: $filetype) {
+      url
+      signedRequest
+    }
+  }
+```
+
+#### Post Image
+
+| Parameter | Description                                                                       | Required |
+| --------- | --------------------------------------------------------------------------------- | -------- |
+| url       | string: The url given by [Upload Image To S3 Bucket](#Upload-Image-To-S3-Bucket). | YES      |
+
+###### Request Example
+
+```
+mutation registerImage($url: String!) {
+    registerImage(url: $url) {
+      url
+      tourPhotoId
+    }
+  }
+```
 
 ## NO Authorization Header Required
 
@@ -86,4 +124,16 @@ mutation login($email: String!, $password: String!){
     }
   }
 }
+```
+
+#### Get Tours
+
+###### Request Example
+
+```
+query tours {
+  tours {
+    name type price tourId
+    }
+  }
 ```

@@ -1,11 +1,25 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuidv4").default;
+<<<<<<< HEAD
+const AWS = require("aws-sdk");
+
+const {
+  config,
+  userTypes,
+  getUserByMail,
+  s3Bucket,
+  postImageBD,
+  createUserBD,
+  registerTourBD,
+  getUserAuth
+=======
 const {
   config,
   getUserByMail,
   createUserBD,
   getUserIdAuth
+>>>>>>> master
 } = require("../utils");
 
 async function signup(_, args) {
@@ -64,6 +78,76 @@ async function login(_, args) {
   };
 }
 
+<<<<<<< HEAD
+async function registerTour(_, args, context) {
+  const user = getUserAuth(context);
+  if (user.user.type === userTypes.customer) {
+    throw new Error("User not authorized");
+  } else {
+    const newTour = {
+      tourId: uuid(),
+      name: args.name,
+      price: args.price,
+      startDate: args.startDate,
+      endDate: args.endDate,
+      type: args.type,
+      createdAt: new Date().toString(),
+      createdBy: user.user
+    };
+    const tour = await registerTourBD(newTour);
+    if (tour) {
+      return tour;
+    } else {
+      throw new Error("Internal Server Error (500)");
+    }
+  }
+}
+
+async function registerImage(_, args, context) {
+  const user = getUserAuth(context);
+  if (user.user.type === userTypes.customer) {
+    throw new Error("User not authorized");
+  } else {
+    const newImage = {
+      tourPhotoId: uuid(),
+      url: args.url
+    };
+    const image = await postImageBD(newImage);
+    if (image) {
+      return image;
+    } else {
+      throw new Error("Internal Server Error (500)");
+    }
+  }
+}
+
+async function uploadToS3(_, args, context) {
+  const user = getUserAuth(context);
+  if (user.user.type === userTypes.customer) {
+    throw new Error("User not authorized");
+  } else {
+    const s3 = new AWS.S3({
+      signatureVersion: "v4",
+      region: "us-east-1"
+    });
+
+    const s3Params = {
+      Bucket: s3Bucket,
+      Key: args.filename,
+      Expires: 60,
+      ContentType: args.filetype,
+      ACL: "public-read"
+    };
+
+    const signedRequest = await s3.getSignedUrl("putObject", s3Params);
+    const url = `https://${s3Bucket}.s3.amazonaws.com/${args.filename}`;
+
+    return {
+      signedRequest,
+      url
+    };
+  }
+=======
 function post(_, args, context) {
   const user = getUserIdAuth(context);
   const link = {
@@ -74,10 +158,17 @@ function post(_, args, context) {
   };
   // links.push(link);
   return link;
+>>>>>>> master
 }
 
 module.exports = {
   signup,
   login,
+<<<<<<< HEAD
+  uploadToS3,
+  registerTour,
+  registerImage
+=======
   post
+>>>>>>> master
 };
