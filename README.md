@@ -28,6 +28,27 @@ https://u2mqz07q4e.execute-api.us-east-1.amazonaws.com/dev/graphql
 | --------- | ----------------------------------------- |
 | token     | Token retrieved after a successful login. |
 
+#### Post Tours
+
+| Parameter | Description                                     | Required |
+| --------- | ----------------------------------------------- | -------- |
+| name      | string: The complete name for the tour.         | YES      |
+| price     | int: The price for the tour.                    | YES      |
+| startDate | string: The start date for the tour (DD/MM/YY). | YES      |
+| endDate   | string: The end date for the tour (DD/MM/YY).   | YES      |
+| type      | string: The tour's type (DD/MM/YY).             | YES      |
+
+###### Request Example
+
+```
+mutation registerTour
+  ($name: String!, $price: Int!, $startDate: String!, $endDate: String!, $type: String!) {
+    registerTour(name: $name, price: $price, startDate: $startDate, endDate: $endDate, type: $type) {
+      name price
+      }
+    }
+```
+
 #### Upload Image To S3 Bucket
 
 | Parameter | Description                            | Required |
