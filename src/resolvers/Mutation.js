@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuidv4").default;
 const AWS = require("aws-sdk");
-
 const {
   config,
   userTypes,
@@ -69,6 +68,7 @@ async function login(_, args) {
     user
   };
 }
+
 
 async function registerTour(_, args, context) {
   const user = getUserAuth(context);
@@ -138,7 +138,7 @@ async function uploadToS3(_, args, context) {
       url
     };
   }
-}
+
 
 module.exports = {
   signup,
