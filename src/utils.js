@@ -20,6 +20,20 @@ const s3Bucket = "pickpack-tours-images";
 dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 //GETS
+const getTours = () =>
+  promisify(callback =>
+    dynamoDb.scan(
+      {
+        TableName: process.env.TOUR_TABLE
+      },
+      callback
+    )
+  )
+    .then(result => result.Items)
+    .catch(error => {
+      throw new Error(error);
+    });
+
 const getUserByMail = email =>
   promisify(callback =>
     dynamoDb.scan(
@@ -135,13 +149,14 @@ function getUserAuth(context) {
   const Authorization = context.headers.Authorization || "";
   if (Authorization) {
     var token = Authorization.replace("Bearer ", "");
+    // throw new Error(token);
     var user;
     jwt.verify(token, config.APP_SECRET, (err, decoded) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
           throw new Error("Expired Token");
         } else {
-          throw new Error("Authentication Token Error");
+          throw new Error(err);
         }
       } else {
         user = decoded;
@@ -157,6 +172,7 @@ module.exports = {
   config,
   userTypes,
   s3Bucket,
+  getTours,
   getUserByMail,
   postImageBD,
   createUserBD,
