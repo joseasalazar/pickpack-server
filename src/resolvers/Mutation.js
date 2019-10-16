@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuidv4").default;
+<<<<<<< HEAD
 const AWS = require("aws-sdk");
 
 const {
@@ -12,6 +13,13 @@ const {
   createUserBD,
   registerTourBD,
   getUserAuth
+=======
+const {
+  config,
+  getUserByMail,
+  createUserBD,
+  getUserIdAuth
+>>>>>>> master
 } = require("../utils");
 
 async function signup(_, args) {
@@ -70,6 +78,7 @@ async function login(_, args) {
   };
 }
 
+<<<<<<< HEAD
 async function registerTour(_, args, context) {
   const user = getUserAuth(context);
   if (user.user.type === userTypes.customer) {
@@ -138,12 +147,28 @@ async function uploadToS3(_, args, context) {
       url
     };
   }
+=======
+function post(_, args, context) {
+  const user = getUserIdAuth(context);
+  const link = {
+    id: uuid(),
+    description: args.description,
+    url: args.url,
+    postedBy: user.user
+  };
+  // links.push(link);
+  return link;
+>>>>>>> master
 }
 
 module.exports = {
   signup,
   login,
+<<<<<<< HEAD
   uploadToS3,
   registerTour,
   registerImage
+=======
+  post
+>>>>>>> master
 };
