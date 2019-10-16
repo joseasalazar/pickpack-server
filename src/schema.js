@@ -44,7 +44,7 @@ const typeDefs = gql`
     price: Int!
     daysAvailable: Int
     clasification: TourClassification
-    cancellartionPolicy: TourPolicy
+    cancellationPolicy: TourPolicy
     discount: Int
     startDate: String!
     endDate: String!
