@@ -69,7 +69,6 @@ async function login(_, args) {
   };
 }
 
-
 async function registerTour(_, args, context) {
   const user = getUserAuth(context);
   if (user.user.type === userTypes.customer) {
@@ -138,7 +137,7 @@ async function uploadToS3(_, args, context) {
       url
     };
   }
-
+}
 
 module.exports = {
   signup,
