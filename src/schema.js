@@ -86,6 +86,7 @@ const typeDefs = gql`
     tourProviders: [TourProvider!]!
     tours: [Tour!]!
     orders: [Order!]!
+    getTourByName(name: String!): Tour!
   }
 
   type Mutation {

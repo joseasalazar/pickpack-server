@@ -66,6 +66,45 @@ const getUserByMail = email =>
       throw new Error(error);
     });
 
+const getTourByNameBD = name =>
+  promisify(callback =>
+    dynamoDb.scan(
+      {
+        TableName: process.env.TOUR_TABLE,
+        ProjectionExpression:
+          "tourId, #n, #p, #da, #c, #cp, #d, #sd, #ed, #t, #q, #s, #ph, #ca. #cb",
+        FilterExpression: "#n = :var",
+        ExpressionAttributeNames: {
+          "#n": "name",
+          "#p": "price",
+          "#da": "daysAvailable",
+          "#c": "clasification",
+          "#cp": "cancellationPolicy",
+          "#d": "discount",
+          "#sd": "startDate",
+          "#ed": "endDate",
+          "#t": "type",
+          "#q": "quantity",
+          "#s": "status",
+          "#ph": "photo",
+          "#ca": "createdAt",
+          "#cb": "createdBy"
+        },
+        ExpressionAttributeValues: { ":var": name }
+      },
+      callback
+    )
+  )
+    .then(result => {
+      if (!result.Items) {
+        return userId;
+      }
+      return result.Items[0];
+    })
+    .catch(error => {
+      throw new Error(error);
+    });
+
 //CREATES
 const postImageBD = tourPhoto =>
   promisify(callback =>
@@ -177,5 +216,6 @@ module.exports = {
   postImageBD,
   createUserBD,
   registerTourBD,
+  getTourByNameBD,
   getUserAuth
 };

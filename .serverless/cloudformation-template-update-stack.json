@@ -117,7 +117,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/pickpack-api-graphql/dev/1571266908576-2019-10-16T23:01:48.576Z/pickpack-api-graphql.zip"
+          "S3Key": "serverless/pickpack-api-graphql/dev/1571886867534-2019-10-24T03:14:27.534Z/pickpack-api-graphql.zip"
         },
         "FunctionName": "pickpack-api-graphql-dev-graphql",
         "Handler": "handler.graphql",
@@ -147,14 +147,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "GraphqlLambdaVersionIEuZLpSAWNfo0ovPhCoFyy3uIX4QFY3h7K5jzBuB0": {
+    "GraphqlLambdaVersion3K5cVzcO699PIMeY3cm2DG2FvG9i1chEWC3SQRdUg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GraphqlLambdaFunction"
         },
-        "CodeSha256": "sS+GpRC8mBIFyGki7JkGqJ8F12vfJLVV7tsgdGA0wH4="
+        "CodeSha256": "fIwtI/o4Z+GnVnvtZYeTVOzeSWVE/F94hGYdXQHj4dY="
       }
     },
     "ApiGatewayRestApi": {
@@ -316,7 +316,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1571266897448": {
+    "ApiGatewayDeployment1571886852463": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -531,7 +531,7 @@
     "GraphqlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GraphqlLambdaVersionIEuZLpSAWNfo0ovPhCoFyy3uIX4QFY3h7K5jzBuB0"
+        "Ref": "GraphqlLambdaVersion3K5cVzcO699PIMeY3cm2DG2FvG9i1chEWC3SQRdUg"
       }
     },
     "ServiceEndpoint": {

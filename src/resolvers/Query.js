@@ -1,4 +1,4 @@
-const { getTours } = require("../utils");
+const { getTours, getTourByNameBD } = require("../utils");
 
 function tourReducer(tour) {
   return {
@@ -29,6 +29,16 @@ async function tours() {
   }
 }
 
+async function getTourByName(_, args) {
+  const tour = await getTourByNameBD(args.name);
+  if (!tour) {
+    throw new Error("No such tour found");
+  } else {
+    return tourReducer(tour);
+  }
+}
+
 module.exports = {
-  tours
+  tours,
+  getTourByName
 };
