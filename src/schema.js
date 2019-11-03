@@ -65,6 +65,7 @@ const typeDefs = gql`
   type User {
     userId: ID!
     name: String!
+    lastName: String!
     email: String!
     password: String!
     type: String!
@@ -94,6 +95,7 @@ const typeDefs = gql`
       email: String!
       password: String!
       name: String!
+      lastName: String!
       birthDate: String!
       gender: String!
       city: String!
