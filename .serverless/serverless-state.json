@@ -145,7 +145,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/pickpack-api-graphql/dev/1572803848639-2019-11-03T17:57:28.639Z/pickpack-api-graphql.zip"
+                "S3Key": "serverless/pickpack-api-graphql/dev/1572805828894-2019-11-03T18:30:28.894Z/pickpack-api-graphql.zip"
               },
               "FunctionName": "pickpack-api-graphql-dev-graphql",
               "Handler": "handler.graphql",
@@ -175,14 +175,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "GraphqlLambdaVersionO8YSSYh9AcY9xL0o0P7MkqQ0wCIEMacCUeuYJ2hwzk": {
+          "GraphqlLambdaVersionDv6ZGmaRZyUioXGfywFNEZxDFcfZLVGNWubwG3zl5Y0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GraphqlLambdaFunction"
               },
-              "CodeSha256": "Bw+g5QNetuYH0FLmOGiWD3yy4OVkZ760dFqO6agKbHA="
+              "CodeSha256": "/vMtmuJcJ+5D8pcGfGOvHAx4Obzcay0yx6uz6UXvKvY="
             }
           },
           "ApiGatewayRestApi": {
@@ -344,7 +344,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1572803833388": {
+          "ApiGatewayDeployment1572805814743": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -559,7 +559,7 @@
           "GraphqlLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GraphqlLambdaVersionO8YSSYh9AcY9xL0o0P7MkqQ0wCIEMacCUeuYJ2hwzk"
+              "Ref": "GraphqlLambdaVersionDv6ZGmaRZyUioXGfywFNEZxDFcfZLVGNWubwG3zl5Y0"
             }
           },
           "ServiceEndpoint": {
@@ -846,7 +846,7 @@
     "artifact": "/Users/joseandressalazar/Desktop/9vno/Lab/pickpack-server/.serverless/pickpack-api-graphql.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/pickpack-api-graphql/dev/1572803848639-2019-11-03T17:57:28.639Z",
+    "artifactDirectoryName": "serverless/pickpack-api-graphql/dev/1572805828894-2019-11-03T18:30:28.894Z",
     "artifact": "pickpack-api-graphql.zip"
   }
 }

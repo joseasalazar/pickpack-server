@@ -136,6 +136,7 @@ const createUserBD = user =>
           userId: user.userId,
           password: user.password,
           name: user.name,
+          lastName: user.lastName,
           email: user.email,
           type: user.type,
           birthDate: user.birthDate,
