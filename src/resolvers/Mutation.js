@@ -81,6 +81,7 @@ async function registerTour(_, args, context) {
       startDate: args.startDate,
       endDate: args.endDate,
       type: args.type,
+      photo: args.photo,
       createdAt: new Date().toString(),
       createdBy: user.user
     };

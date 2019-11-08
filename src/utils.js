@@ -169,6 +169,7 @@ const registerTourBD = tour =>
           startDate: tour.startDate,
           endDate: tour.endDate,
           type: tour.type,
+          photo: tour.photo,
           createdAt: tour.createdAt,
           createdBy: tour.createdBy
         },

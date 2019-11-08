@@ -109,6 +109,7 @@ const typeDefs = gql`
       startDate: String!
       endDate: String!
       type: String!
+      photo: String
     ): Tour!
     registerImage(url: String!): TourPhoto!
     uploadToS3(filename: String!, filetype: String!): S3Payload!
