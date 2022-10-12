@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.9.4",
+    "apollo-server": "^2.25.4",
     "apollo-server-lambda": "^2.9.4",
     "aws-sdk": "^2.537.0",
     "bcryptjs": "^2.4.3",
